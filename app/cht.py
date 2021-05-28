@@ -34,6 +34,7 @@ def process_request(data):
     # Check if value correponding to object key is "page"
     if data["object"] == "page":
         # loop on the list correponding to entry key
+        pid = data["entry"][0]['id']
         for entry in data["entry"]:
             # loop on the list correponding to the messaging key
             for messaging_event in entry["messaging"]:
@@ -42,7 +43,7 @@ def process_request(data):
                 sender_id = messaging_event["sender"]["id"]
                 recipient_id = messaging_event["recipient"]["id"]
                 # (2) check messege type is simple messege type
-                if messaging_event.get("message"):
+                if messaging_event.get("message") and pid == recipient_id:
                     # there is text key
                     if "text" in messaging_event["message"]:
                         messaging_text = messaging_event["message"]["text"]
@@ -53,8 +54,7 @@ def process_request(data):
 
 def get_wit(sender_id, msg):
     client = Wit(Wit_ACCESS_TOKEN)
-    # print(msg)
-    resp = client.message("hi")  # msg)
+    resp = client.message(msg)
 
     if len(resp.get('intents')) > 0:
         intent = resp.get('intents')[0].get('name')
