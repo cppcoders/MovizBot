@@ -28,7 +28,7 @@ TOKEN = os.environ['TOKEN']
 
 tbot = telegram.Bot(token=TOKEN)
 
-@app.route('/{}'.format(TOKEN), methods=['POST', 'GET'])
+@app.route('/tele', methods=['POST', 'GET'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), tbot)
     chat_id = update.message.chat.id
