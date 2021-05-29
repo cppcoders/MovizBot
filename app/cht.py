@@ -28,15 +28,15 @@ TOKEN = os.environ['TOKEN']
 
 tbot = telegram.Bot(token=TOKEN)
 
-@app.route('/tele', methods=['POST', 'GET'])
+@app.route('/tele', methods=['POST'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), tbot)
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     msg = update.message.text.encode('utf-8').decode()
-    '''
+    
     tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
-    '''
+    
     return 'ok'
 
 
