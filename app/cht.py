@@ -48,7 +48,7 @@ def wittel(text):
     client = Wit(Wit_ACCESS_TOKEN)
     resp = client.message(text)
 
-    if len(resp.get('intents')) > 0:
+    if len(resp.get('intents')) > 0 and len(resp.get('entities')) > 0:
         intent = resp.get('intents')[0].get('name')
         entity = list(resp.get('entities').values())[0][0].get('body')
         message = mmodule.main_function(intent, entity)
@@ -101,7 +101,7 @@ def get_wit(sender_id, msg):
     resp = client.message(msg)
     #message = "none"
     
-    if len(resp.get('intents')) > 0:
+    if len(resp.get('intents')) > 0 and len(resp.get('entities')) > 0:
         intent = resp.get('intents')[0].get('name')
         entity = list(resp.get('entities').values())[0][0].get('body')
         message = mmodule.main_function(intent, entity)
