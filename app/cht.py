@@ -34,14 +34,13 @@ def respond():
     txt = request.get_json()
     print(update)
     print(txt)
-    '''
-    txt = (txt['result'])[0]
+    
     chat_id = txt['message']['chat']['id']
     msg_id = txt['message']['message_id']
     msg = txt['message']['text'].encode('utf-8').decode()
     
     tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
-    '''
+    
     return 'ok'
 
 
