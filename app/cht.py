@@ -34,7 +34,9 @@ def respond():
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     msg = update.message.text.encode('utf-8').decode()
+    '''
     tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
+    '''
     return 'ok'
 
 
