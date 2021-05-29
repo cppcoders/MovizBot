@@ -32,9 +32,10 @@ tbot = telegram.Bot(token=TOKEN)
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), tbot)
     txt = request.get_json()
-    chat_id = txt.message.chat.id
-    msg_id = txt.message.message_id
-    msg = txt.message.text.encode('utf-8').decode()
+    txt = (txt['result'])[0]
+    chat_id = txt['message']['chat']['id']
+    msg_id = txt['message']['message_id']
+    msg = txt['message']['text'].encode('utf-8').decode()
     
     tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
     
