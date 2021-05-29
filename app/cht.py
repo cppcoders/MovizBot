@@ -19,6 +19,7 @@ app = Flask(__name__)
 
 # ---------------------------------------TEl
 import os
+import json
 
 TOKEN = os.environ['TOKEN']
 
@@ -29,11 +30,11 @@ tbot = telegram.Bot(token=TOKEN)
 
 @app.route('/{}'.format(TOKEN), methods=['POST'])
 def respond():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
+    update = telegram.Update.de_json(request.get_json(force=True), tbot)
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     msg = update.message.text.encode('utf-8').decode()
-    bot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
+    tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
     return 'ok'
 
 
