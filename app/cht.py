@@ -19,7 +19,8 @@ app = Flask(__name__)
 
 # ---------------------------------------TEl
 
-
+global tbot
+global bot_token 
 bot_token = "1805801633:AAGf_VfOwnP6WP61EwYTSTDlMw4_pcnzLQs"
 bot_user_name = "movizsbot"
 URL = "https://movizbot-server.herokuapp.com/"
@@ -131,15 +132,14 @@ def process_request(data):
 def get_wit(sender_id, msg):
     client = Wit(Wit_ACCESS_TOKEN)
     resp = client.message(msg)
-    message = "none"
-    '''
+    
     if len(resp.get('intents')) > 0:
         intent = resp.get('intents')[0].get('name')
         entity = list(resp.get('entities').values())[0][0].get('body')
         message = mmodule.main_function(intent, entity)
     else:
         message = "I'm not sure what to do"
-        '''
+        
     reply(sender_id, message)
 
 
