@@ -20,23 +20,63 @@ app = Flask(__name__)
 # ---------------------------------------TEl
 import os
 import json
+from queue import Queue
+from threading import Thread
+from flask import Flask, request
+from telegram.ext import MessageHandler, Filters
 
-TOKEN = os.environ['TOKEN']
+from telegram import Update
+from telegram.ext import Dispatcher
+import logging
+import sys
+import os
+
+file_handler = logging.FileHandler(filename='log.txt',encoding='utf-8')
+stdout_handler = logging.StreamHandler(sys.stdout)
+handlers = [file_handler, stdout_handler]
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO,handlers=handlers)
+
+logger = logging.getLogger(__name__)
+TOKEN = "1805801633:AAGf_VfOwnP6WP61EwYTSTDlMw4_pcnzLQs"
+NAME = "movizbot-server"
 
 
 
 
 tbot = telegram.Bot(token=TOKEN)
+def echo(update, context):
+    text = update.message.text
+    update.message.reply_text(wittel(text))
 
-@app.route('/{}'.format(TOKEN), methods=['POST'])
-def respond():
-    update = telegram.Update.de_json(request.get_json(force=True), tbot)
-    chat_id = update.message.chat.id
-    msg_id = update.message.message_id
-    msg = update.message.text.encode('utf-8').decode()
-    tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
-    return 'ok'
+def setup(TOKEN):
+    # update queue and dispatcher instances
+    update_queue = Queue()
 
+    dispatcher = Dispatcher(tbot, update_queue, use_context=True)
+
+    ##### Register handlers here #####
+    echo_handler = MessageHandler(Filters.text, echo)
+    dispatcher.add_handler(echo_handler)
+
+    # Start the thread
+    tbot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
+    thread = Thread(target=dispatcher.start, name='dispatcher')
+    thread.start()
+
+    return update_queue
+    # you might want to return dispatcher as well,
+    # to stop it at server shutdown, or to register more handlers:
+    # return (update_queue, dispatcher)
+
+update_queue = setup(TOKEN)
+
+@app.route('/' + TOKEN, methods=['GET','POST'])
+def pass_update():
+    new_update = Update.de_json(request.get_json(force=True),bot)
+    update_queue.put(new_update)
+    return "ok"
 
 def wittel(text):
     client = Wit(Wit_ACCESS_TOKEN)
