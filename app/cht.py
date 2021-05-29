@@ -108,6 +108,7 @@ def get_wit(sender_id, msg):
 def reply(sender_id, response):
     bot.send_text_message(sender_id, response)
 
+port = int(os.environ.get('PORT', 8443))
 
 if __name__ == "__main__":
-      app.run(host='0.0.0.0', port=8443)
+      app.run(port=8443)
