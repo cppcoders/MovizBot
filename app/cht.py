@@ -19,64 +19,24 @@ app = Flask(__name__)
 
 # ---------------------------------------TEl
 import os
-import json
-from queue import Queue
-from threading import Thread
-from flask import Flask, request
-from telegram.ext import MessageHandler, Filters
 
-from telegram import Update
-from telegram.ext import Dispatcher
-import logging
-import sys
-import os
 
-file_handler = logging.FileHandler(filename='log.txt',encoding='utf-8')
-stdout_handler = logging.StreamHandler(sys.stdout)
-handlers = [file_handler, stdout_handler]
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO,handlers=handlers)
-
-logger = logging.getLogger(__name__)
-TOKEN = "1805801633:AAGf_VfOwnP6WP61EwYTSTDlMw4_pcnzLQs"
-NAME = "movizbot-server"
+TOKEN = os.environ['TOKEN']
 
 
 
 
 tbot = telegram.Bot(token=TOKEN)
-def echo(update, context):
-    text = update.message.text
-    update.message.reply_text(wittel(text))
 
-def setup(TOKEN):
-    # update queue and dispatcher instances
-    update_queue = Queue()
+@app.route('/{}'.format(TOKEN), methods=['POST', 'GET'])
+def respond():
+    update = telegram.Update.de_json(request.get_json(force=True), tbot)
+    chat_id = update.message.chat.id
+    msg_id = update.message.message_id
+    msg = update.message.text.encode('utf-8').decode()
+    tbot.sendMessage(chat_id=chat_id, text=wittel(msg), reply_to_message_id=msg_id)
+    return 'ok'
 
-    dispatcher = Dispatcher(tbot, update_queue, use_context=True)
-
-    ##### Register handlers here #####
-    echo_handler = MessageHandler(Filters.text, echo)
-    dispatcher.add_handler(echo_handler)
-
-    # Start the thread
-    tbot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
-    thread = Thread(target=dispatcher.start, name='dispatcher')
-    thread.start()
-
-    return update_queue
-    # you might want to return dispatcher as well,
-    # to stop it at server shutdown, or to register more handlers:
-    # return (update_queue, dispatcher)
-
-update_queue = setup(TOKEN)
-
-@app.route('/' + TOKEN, methods=['GET','POST'])
-def pass_update():
-    new_update = Update.de_json(request.get_json(force=True),bot)
-    update_queue.put(new_update)
-    return "ok"
 
 def wittel(text):
     client = Wit(Wit_ACCESS_TOKEN)
@@ -133,22 +93,21 @@ def process_request(data):
 def get_wit(sender_id, msg):
     client = Wit(Wit_ACCESS_TOKEN)
     resp = client.message(msg)
-    message = "none"
-    '''
+    #message = "none"
+    
     if len(resp.get('intents')) > 0:
         intent = resp.get('intents')[0].get('name')
         entity = list(resp.get('entities').values())[0][0].get('body')
         message = mmodule.main_function(intent, entity)
     else:
         message = "I'm not sure what to do"
-    '''    
+        
     reply(sender_id, message)
     
 
 def reply(sender_id, response):
     bot.send_text_message(sender_id, response)
 
-PORT = int(os.environ.get('PORT', '8443'))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=PORT,debug=True)
+    app.run()
