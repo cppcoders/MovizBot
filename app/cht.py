@@ -6,9 +6,9 @@ from pymessenger import Bot
 from wit import Wit
 import app.mmodule as mmodule
 
-PAGE_ACCESS_TOKEN = '***REMOVED***'
-Wit_ACCESS_TOKEN = '***REMOVED***'
-VERIFICATION_TOKEN = 'Token'
+PAGE_ACCESS_TOKEN = os.environ['PAGE_ACCESS_TOKEN']
+Wit_ACCESS_TOKEN = os.environ['Wit_ACCESS_TOKEN']
+VERIFICATION_TOKEN = os.environ['VERIFICATION_TOKEN']
 
 
 bot = Bot(PAGE_ACCESS_TOKEN)
