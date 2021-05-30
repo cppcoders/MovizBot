@@ -5,7 +5,7 @@ from flask import Flask, request
 from pymessenger import Bot
 from wit import Wit
 import app.mmodule as mmodule
-
+import os
 PAGE_ACCESS_TOKEN = os.environ['PAGE_ACCESS_TOKEN']
 Wit_ACCESS_TOKEN = os.environ['Wit_ACCESS_TOKEN']
 VERIFICATION_TOKEN = os.environ['VERIFICATION_TOKEN']
@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 
 # ---------------------------------------TEl
-import os
+
 
 
 TOKEN = os.environ['TOKEN']
